@@ -8,7 +8,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { fieldConfig } from "./fieldConfig";
+import { fieldConfig } from "./fieldConfig"; // Make sure it's updated per below
 
 // Helper functions
 const getNestedValue = (obj, path) =>
@@ -59,12 +59,8 @@ const CafeForm = () => {
       }
     };
 
-    fieldConfig.forEach((field) => {
-      if (field.type === "section") {
-        field.fields.forEach(validateField);
-      } else {
-        validateField(field);
-      }
+    fieldConfig.forEach((section) => {
+      section.fields.forEach(validateField);
     });
 
     setErrors(newErrors);
@@ -76,7 +72,7 @@ const CafeForm = () => {
     const value = getNestedValue(formData, name) ?? "";
     const error = getNestedValue(errors, name);
 
-    if (["text", "email", "tel", "number", "date"].includes(type)) {
+    if (["text", "email", "tel", "number"].includes(type)) {
       return (
         <TextField
           fullWidth
@@ -143,75 +139,95 @@ const CafeForm = () => {
   };
 
   return (
+  <Box
+    sx={{
+      bgcolor: "#0f1c13",
+      minHeight: "100vh",
+      width: "100%",
+      py: { xs: 3, md: 6 },
+      px: { xs: 2, md: 6 },
+      overflowY: "auto",
+    }}
+  >
     <Box
       sx={{
-        bgcolor: "#013220", // Full page dark forest green background
-        minHeight: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        px: 3,
-        py: 4,
-        overflowY: "auto",
+        maxWidth: "1400px",
+        mx: "auto",
+        color: "#fff",
       }}
     >
-      <Box
-        sx={{
-          width: "100%",  // full width
-          maxWidth: 900,  // max width for large screens
-          maxHeight: "90vh",
-          overflowY: "auto",
-          px: 4,
-          py: 4,
-          bgcolor: "#154734",   // Slightly lighter green container
-          borderRadius: 2,
-          boxShadow: 5,
-          color: "#fff",
-        }}
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        sx={{ color: "#fff", fontWeight: "bold", mb: 4 }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: "#a7d89c" }}>
-          🎮 Register Your Gaming Cafe
-        </Typography>
+        Register Your Cafe
+      </Typography>
 
-        <form onSubmit={handleSubmit}>
-          {fieldConfig.map((section, idx) => (
-            <Box key={idx} sx={{ mt: 4 }}>
-              <Typography variant="h6" gutterBottom sx={{ color: "#a7d89c" }}>
-                {section.label}
-              </Typography>
-
-              <Grid container spacing={2}>
-                {section.fields.map((field) => (
-                  <Grid item xs={12} sm={6} md={4} key={field.name}>
-                    {renderField(field)}
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          ))}
-
-          <Box sx={{ mt: 5 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
+      <form onSubmit={handleSubmit}>
+        {fieldConfig.map((section, idx) => (
+          <Box key={idx}>
+            <Box
               sx={{
-                bgcolor: "#a7d89c",
-                color: "#013220",
-                fontWeight: "bold",
-                "&:hover": {
-                  bgcolor: "#c4efb6",
-                },
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                my: 3,
               }}
             >
-              Submit
-            </Button>
+              <Box sx={{ flex: 1, height: "1px", backgroundColor: "#555" }} />
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  color: "#ccc",
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {section.label.toUpperCase()}
+              </Typography>
+              <Box sx={{ flex: 1, height: "1px", backgroundColor: "#555" }} />
+            </Box>
+
+            <Grid container spacing={2}>
+              {section.fields.map((field) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={field.fullWidth ? 12 : 6}
+                  md={field.fullWidth ? 12 : 4}
+                  key={field.name}
+                >
+                  {renderField(field)}
+                </Grid>
+              ))}
+            </Grid>
           </Box>
-        </form>
-      </Box>
+        ))}
+
+        <Box sx={{ mt: 5 }}>
+          <Button
+            type="submit"
+            fullWidth
+            sx={{
+              bgcolor: "#fff",
+              color: "#154734",
+              fontWeight: "bold",
+              py: 1.4,
+              fontSize: "1rem",
+              "&:hover": {
+                bgcolor: "#e0e0e0",
+              },
+            }}
+          >
+            SUBMIT
+          </Button>
+        </Box>
+      </form>
     </Box>
-  );
-};
+  </Box>
+);
+  };
 
 export default CafeForm;
